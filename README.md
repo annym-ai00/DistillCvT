@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 ## Preparation
 1. Change the ROOT_PATH value in the following file to yours:
-    - `datasets/datasets.py`
+    - `dataset/datasets.py`
 
 2. Download the datasets and put them into corresponding folders that mentioned in the ROOT_PATH:<br/>
     - **CUB-200-2011**: download from [here](https://www.vision.caltech.edu/datasets/cub_200_2011/), rename the file to `CUB_200_2011` and put in `data` folder.
