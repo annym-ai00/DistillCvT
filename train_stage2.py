@@ -257,7 +257,7 @@ def validate(args, model, val_loader):
             data_shot, data_query = data[:p], data[p:]
 
             proto = model(data_shot)  # (30, 1600)
-            proto = proto.reshape(args.shot, args.train_way, -1).mean(dim=0)
+            proto = proto.reshape(args.shot, args.test_way, -1).mean(dim=0)
             query = model(data_query)
 
             label = torch.arange(args.test_way).repeat(args.test_query)
