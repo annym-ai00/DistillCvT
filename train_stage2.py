@@ -83,6 +83,7 @@ def main(args):
     timer = Timer()
     best_epoch = 0
     start_epoch = 1
+    cmi = [0.0, 0.0]
       
     # check resume point
     checkpoint_file = os.path.join(args.checkpoint_path, 'checkpoint.pth.tar')
