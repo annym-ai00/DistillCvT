@@ -73,7 +73,6 @@ def main(args):
         
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--max-epoch', type=int, default=30)
     
     #5-way-1-shot setting
     parser.add_argument('--shot', type=int, default=1)
