@@ -68,20 +68,14 @@ def main(args):
     trlog['args'] = vars(args)
     trlog['train_loss'] = []
     trlog['val_loss'] = []
-    trlog['test_loss'] = []
     trlog['train_acc'] = []
     trlog['val_acc'] = []
-    trlog['test_acc'] = []
     trlog['max_acc'] = 0.0
-    trlog['maxtestacc'] = 0.0
     trlog['max_epoch'] = 0
-    trlog['maxtestepoch'] = 0
-
+    
     timer = Timer()
     best_epoch = 0
     start_epoch = 1
-    cmi = [0.0, 0.0]
-    cmi2 = [0.0, 0.0]
       
     # check resume point
     checkpoint_file = os.path.join(args.checkpoint_path, 'checkpoint.pth.tar')
@@ -92,8 +86,6 @@ def main(args):
         model.load_state_dict(checkpoint['model'])
         optimizer.load_state_dict(checkpoint['optimizer'])
         lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
-        trlog['maxtestacc'] = checkpoint['best_test_acc']
-        trlog['maxtestepoch'] = checkpoint['best_test_epoch']
         trlog['max_acc'] = checkpoint['best_acc']
         trlog['max_epoch'] = checkpoint['best_epoch']
         print("=> Resume from epoch {} ...".format(start_epoch))
@@ -104,8 +96,6 @@ def main(args):
         tl, ta = train(args, model, train_loader, optimizer)
         lr_scheduler.step()
         vl, va, aa, bb = validate(args, model, val_loader)
-        # Additional validation on test dataset
-        test_loss, test_acc, test_acc_mean, test_acc_ci = validate(args, model, test_loader)
 
         if va > trlog['max_acc']:
             trlog['max_acc'] = va
@@ -125,31 +115,12 @@ def main(args):
         trlog['train_acc'].append(ta)
         trlog['val_loss'].append(vl)
         trlog['val_acc'].append(va)
-        trlog['test_loss'].append(test_loss)
-        trlog['test_acc'].append(test_acc)
-        
-        # Update max test accuracy and epoch if necessary
-        if test_acc > trlog['maxtestacc']:
-            trlog['maxtestacc'] = test_acc
-            trlog['maxtestepoch'] = epoch
-            save_model('max-test-acc')
-            cmi2[0] = test_acc_mean
-            cmi2[1] = test_acc_ci
-            
-            # save best model
-            save_checkpoint({
-                'best_test_acc': test_acc,
-                'best_test_epoch': epoch,
-                'model': model.state_dict()
-            }, args.save_path, name='max-test-acc')
 
         torch.save(trlog, osp.join(args.save_path, 'trlog'))
         
         # checkpoint saving
         save_checkpoint({
             'start_epoch': epoch,
-            'best_test_acc': trlog['maxtestacc'],
-            'best_test_epoch': trlog['maxtestepoch'],
             'best_acc': trlog['max_acc'],
             'best_epoch': trlog['max_epoch'],
             'model': model.state_dict(),
@@ -165,9 +136,6 @@ def main(args):
         print('Epoch {}/{}, train loss={:.4f} - acc={:.4f} - val loss={:.4f} - acc={:.4f} - max acc={:.4f} - ETA:{}/{}'.format(
             epoch, args.max_epoch, tl, ta, vl, va, trlog['max_acc'], ots, timer.tts(tt-ot)))
         print("Best Epoch is {} with acc={:.2f}±{:.2f}%...".format(best_epoch, cmi[0], cmi[1]))
-        
-        print('\nTest loss={:.4f} - acc={:.4f} - acc={:.2f}±{:.2f}%'.format(test_loss, test_acc, test_acc_mean, test_acc_ci))
-        print("Best Test Accuracy: {:.2f}±{:.2f}%, achieved at epoch {}".format(cmi2[0], cmi2[1], trlog['maxtestepoch']))
         
         print("------------------------------------------------------\n")
 
