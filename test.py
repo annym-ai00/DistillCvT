@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 
-from models.TeSMo_KAN import TeSMo_KAN
+from models.cvt import CvT
 from dataset.datasets import DatasetLoader
 from dataset.samplers import CategoriesSampler
 from utils import seed_torch, set_gpu, Averager, count_acc, euclidean_metric, Timer, compute_confidence_interval
@@ -31,7 +31,7 @@ def main(args):
     test_loader = DataLoader(dataset=testset, batch_sampler=test_sampler,
                             num_workers=0, pin_memory=True)
 
-    model = TeSMo_KAN(num_classes=n_cls).cuda()
+    model = CvT(num_classes=n_cls).cuda()
 
     # check resume point
     checkpoint_file = os.path.join(args.save_path, 'max-acc.pth')
