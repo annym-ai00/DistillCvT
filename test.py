@@ -34,7 +34,7 @@ def main(args):
     model = TeSMo_KAN(num_classes=n_cls).cuda()
 
     # check resume point
-    checkpoint_file = os.path.join(args.save_path, 'max-test-acc.pth')
+    checkpoint_file = os.path.join(args.save_path, 'max-acc.pth')
     if os.path.isfile(checkpoint_file):
         checkpoint = torch.load(checkpoint_file)
         model.load_state_dict(checkpoint)
