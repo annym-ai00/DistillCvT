@@ -43,7 +43,7 @@ def get_dataset(args):
 def main(args):
     ensure_path(args.save_path)
 
-    train_loader, val_loader, test_loader, n_cls = get_dataset(args)
+    train_loader, val_loader, n_cls = get_dataset(args)
    
     model = CvT(num_classes=n_cls).cuda()
        
