@@ -301,7 +301,6 @@ if __name__ == '__main__':
     parser.add_argument('--step-size', type=int, default=10)
     parser.add_argument('--train-batch', type=int, default=10000)
     parser.add_argument('--valid-batch', type=int, default=1000)
-    parser.add_argument('--test-batch', type=int, default=1000)
     args, _ = parser.parse_known_args()
     
     # Create the directory if it doesn't exist
